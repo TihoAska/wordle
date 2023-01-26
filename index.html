@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" id="pozadina">
+  <head>
+    <title>Wordle</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <h1>WORDLE</h1>
+
+    <button id="StartButton" onclick="getWord()">Start</button>
+    <div id="randomRijec"></div>
+
+    <div class="box">
+      <div class="red">
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+      </div>
+      <div class="red">
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+      </div>
+      <div class="red">
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+      </div>
+      <div class="red">
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+      </div>
+      <div class="red">
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+      </div>
+      <div class="red">
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+        <div class="kockica"></div>
+      </div>
+    </div>
+
+
+
+
+    <div id="tipkovnica">
+      <div id="prvi_red">
+        <div class="slovo">Q</div>
+        <div class="slovo">W</div>
+        <div class="slovo">E</div>
+        <div class="slovo">R</div>
+        <div class="slovo">T</div>
+        <div class="slovo">Z</div>
+        <div class="slovo">U</div>
+        <div class="slovo">I</div>
+        <div class="slovo">O</div>
+        <div class="slovo">P</div>
+      </div>
+      <div id="drugi_red">
+        <div class="slovo">A</div>
+        <div class="slovo">S</div>
+        <div class="slovo">D</div>
+        <div class="slovo">F</div>
+        <div class="slovo">G</div>
+        <div class="slovo">H</div>
+        <div class="slovo">J</div>
+        <div class="slovo">K</div>
+        <div class="slovo">L</div>
+      </div>
+      <div id="treci_red">
+        <div class="slovo" id="Enter">Enter</div>
+        <div class="slovo">Y</div>
+        <div class="slovo">X</div>
+        <div class="slovo">C</div>
+        <div class="slovo">V</div>
+        <div class="slovo">B</div>
+        <div class="slovo">N</div>
+        <div class="slovo">M</div>
+        <div class="slovo" id="Del">Del</div>
+      </div>
+    </div>
+    </div>
+  </body>
+
+  <script>
+    var kocka= document.querySelectorAll(".kockica");
+    var tipkovnica = document.querySelectorAll(".slovo");
+    var enterKey = document.getElementById("Enter");
+    var delKey = document.getElementById("Del");
+    var button = document.getElementById("StartButton");
+    var pozadina = document.getElementById("pozadina");
+    
+
+    var rijec = [];
+    var randomRijec;
+    var index = [];
+    var start = 0;
+
+    var randomRijecDiv = document.getElementById("randomRijec");
+
+    var enter = 0;
+    var del = 0;
+
+    var xhttp = new XMLHttpRequest();
+
+    function getWord(){
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                //randomRijecDiv.innerHTML = this.responseText;
+                randomRijec = this.responseText;
+                pozadina.style.backgroundColor = "darkslategray";
+                start = 1;
+            }
+        };
+
+        xhttp.open(
+        "GET",
+        "http://coded-quiz.azurewebsites.net/api/Wordle/GetRandom",
+        true
+        );
+
+        xhttp.send();
+    }
+
+    delKey.addEventListener("click", function(){
+      del = 1;
+    })
+
+    enterKey.addEventListener("click", function(){
+        enter = 1;
+    })
+
+    index = 0;
+    j = 0;
+    k=0;
+    l=0;
+    aux = 0;
+
+    flag = 0;
+    correct = 0;
+    
+    for (let i = 0; i < tipkovnica.length; i++) {
+      
+        tipkovnica[i].addEventListener("click", function () {
+
+          if(start == 1){
+
+            if(index == 5){
+              if (del == 1){
+                --index;
+                flag = 1;
+              }
+            }
+
+            if((index >= 0) && (index < 5)){
+
+              if(flag == 1){
+                ++index;
+              }
+              flag = 0;
+
+              rijec[index] = tipkovnica[i].innerHTML;
+              kocka[j].innerHTML = tipkovnica[i].innerHTML;
+
+              if(kocka[j].innerHTML == "Enter"){
+                kocka[j].innerHTML = " ";
+                enter = 0;
+              } 
+              else if (kocka[j].innerHTML == "Del"){
+                if (index == 0)
+                {
+                  kocka[j].innerHTML = " ";
+                }
+                else if ((index > 0) && (index <= 5))
+                {
+                  kocka[j].innerHTML = " ";
+                  --j;
+                  --index;
+                  kocka[j].innerHTML = " ";
+                  if(j<0){
+                    j = 0;
+                  }
+                  if (index<0){
+                    index=0;
+                  }
+                } 
+              }
+              else
+              {
+                index++;
+                j++;
+              }
+              console.log("------------------");
+              console.log("j: " + j);
+              console.log("Index: " + index);
+              console.log("------------------");
+              del = 0;
+            }
+
+            if(enter == 1){
+
+              for(let i=0; i<5; i++){
+                for(let f = 0; f<5; f++){
+                  if(rijec[i] == randomRijec[f]){
+                    kocka[l].style.backgroundColor = "yellow";
+                  } 
+                }
+                l++;
+              }
+
+              for(let i=0; i<5; i++){
+                if (kocka[aux].style.backgroundColor == "gray"){
+                  for (let q = 0; q < tipkovnica.length; q++){
+                    if(tipkovnica[q].innerHTML == kocka[aux].innerHTML){
+                      tipkovnica[q].style.backgroundColor = "red";
+                    }
+                  }
+                }
+                aux++;
+                console.log("Aux: " + aux);
+              }
+
+
+              for(let i=0; i<5; i++){
+                if(rijec[i] == randomRijec[i]){
+                      kocka[k].style.backgroundColor = "lime";
+                      correct++;
+                  }
+                  k++;
+               }
+
+                if(correct == 5){
+                    console.log("gg");
+                    return;
+                }
+                enter = 0;
+                index = 0;
+                correct = 0;
+                console.log(k);
+            }
+          }  
+        })
+    }
+  </script>
+</html>
